@@ -1,61 +1,69 @@
 package com.speechtotext;
 
-import static android.Manifest.permission.INTERNET;
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
-import static android.Manifest.permission.RECORD_AUDIO;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
 import android.os.Bundle;
-import android.util.Log;
 
-import com.microsoft.cognitiveservices.speech.SpeechConfig;
-import com.microsoft.cognitiveservices.speech.SpeechRecognitionResult;
-import com.microsoft.cognitiveservices.speech.SpeechRecognizer;
-import com.microsoft.cognitiveservices.speech.audio.AudioConfig;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import com.google.android.material.tabs.TabLayoutMediator;
+import com.speechtotext.databinding.ActivityMainBinding;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-
-public class MainActivity extends AppCompatActivity {
-
-    SpeechConfig speechConfig = SpeechConfig.fromSubscription("ab07df133f6f4e99b6e7b531f40be5a2", "westus2");
+public class MainActivity extends FragmentActivity {
+    static final int NUM_ITEMS = 2;
+    MyAdapter mAdapter;
+    ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        // Initialize SpeechSDK and request required permissions.
-        try {
-            // a unique number within the application to allow
-            // correlating permission request responses with the request.
-            int permissionRequestId = 5;
+        mAdapter = new MyAdapter(this);
 
-            // Request permissions needed for speech recognition
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{RECORD_AUDIO, INTERNET, READ_EXTERNAL_STORAGE}, permissionRequestId);
-        }
-        catch(Exception ex) {
-            Log.e("SpeechSDK", "could not init sdk, " + ex.toString());
-        }
+        binding.pager.setAdapter(mAdapter);
 
-        try {
-            fromMic(speechConfig);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
+        new TabLayoutMediator(binding.tabLayout, binding.pager, (tab, position) -> {
+            if (position == 0) {
+                tab.setText("Recording");
+                tab.setIcon(R.drawable.mic);
+            } else if (position == 1) {
+                tab.setText("Note");
+                tab.setIcon(R.drawable.note);
+            }
+        }).attach();
     }
 
-    public static void fromMic(SpeechConfig speechConfig) throws InterruptedException, ExecutionException {
-        AudioConfig audioConfig = AudioConfig.fromDefaultMicrophoneInput();
-        SpeechRecognizer recognizer = new SpeechRecognizer(speechConfig, audioConfig);
+    public static class MyAdapter extends FragmentStateAdapter {
+        public MyAdapter(@NonNull FragmentActivity fragmentActivity) {
+            super(fragmentActivity);
+        }
 
-        Log.e("minmin", "Speak into your microphone.");
-        Future<SpeechRecognitionResult> task = recognizer.recognizeOnceAsync();
-        SpeechRecognitionResult result = task.get();
-        Log.e("minmin", ": " + result.getText());
+        @NonNull
+        @Override
+        public Fragment createFragment(int position) {
+            // Return a NEW fragment instance in createFragment(int)
+            if (position == 0) {
+                SpeechFragment fragment = new SpeechFragment();
+                Bundle args = new Bundle();
+                // Our object is just an integer :-P
+                args.putInt(SpeechFragment.ARG_OBJECT, position + 1);
+                fragment.setArguments(args);
+                return fragment;
+            } else {
+                SpeechFragment fragment = new SpeechFragment();
+                Bundle args = new Bundle();
+                // Our object is just an integer :-P
+                args.putInt(SpeechFragment.ARG_OBJECT, position + 1);
+                fragment.setArguments(args);
+                return fragment;
+            }
+        }
+
+        @Override
+        public int getItemCount() {
+            return NUM_ITEMS;
+        }
     }
 }
