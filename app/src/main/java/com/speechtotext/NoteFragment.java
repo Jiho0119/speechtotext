@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.microsoft.cognitiveservices.speech.translation.SpeechTranslationConfig;
 import com.speechtotext.databinding.FragmentNoteBinding;
@@ -17,6 +18,7 @@ public class NoteFragment extends Fragment {
     int mNum;
     private FragmentNoteBinding binding;
     private NoteViewModel viewModel;
+    private NoteRecyclerViewAdapter adapter;
 
     /**
      * When creating, retrieve this instance's number from its arguments.
@@ -25,13 +27,20 @@ public class NoteFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(this, new ViewModelProvider.NewInstanceFactory()).get(NoteViewModel.class);
-
         mNum = getArguments() != null ? getArguments().getInt("num") : 1;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentNoteBinding.inflate(inflater);
+        adapter = new NoteRecyclerViewAdapter();
+        binding.recyclerview.setAdapter(adapter);
+        binding.recyclerview.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        viewModel.getNotes.observe(getViewLifecycleOwner(), notes -> {
+            adapter.updateData(notes);
+        });
+
         return binding.getRoot();
     }
 }
