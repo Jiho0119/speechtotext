@@ -104,8 +104,10 @@ public class SpeechFragment extends Fragment {
                 .setItems(category, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         String selectedCategory = category[which];
-                        Toast.makeText(SpeechFragment.this.getActivity(), selectedCategory+" saved", Toast.LENGTH_SHORT).show();
+                        String englishText = binding.englishText.getText().toString();
+                        String koreanText = binding.koreanText.getText().toString();
 
+                        Toast.makeText(SpeechFragment.this.getActivity(), selectedCategory+" saved", Toast.LENGTH_SHORT).show();
                     }
                 });
         builder.create().show();
