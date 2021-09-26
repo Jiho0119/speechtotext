@@ -7,6 +7,7 @@ import static android.Manifest.permission.RECORD_AUDIO;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -23,7 +24,7 @@ import com.microsoft.cognitiveservices.speech.translation.TranslationRecognition
 import com.microsoft.cognitiveservices.speech.translation.TranslationRecognizer;
 import com.microsoft.cognitiveservices.speech.translation.SpeechTranslationConfig;
 import com.microsoft.cognitiveservices.speech.audio.AudioConfig;
-import com.speechtotext.databinding.ActivitySpeechBinding;
+import com.speechtotext.databinding.FragmentSpeechBinding;
 
 import java.util.Map;
 
@@ -31,8 +32,8 @@ public class SpeechFragment extends Fragment {
     public static final String ARG_OBJECT = "object";
     int mNum;
     SpeechTranslationConfig translationConfig = SpeechTranslationConfig.fromSubscription("70fbabf826564efd828ae9c8868512b7", "westus2");
-    private ActivitySpeechBinding binding;
-
+    private FragmentSpeechBinding binding;
+    private NoteViewModel viewModel;
 
     /**
      * When creating, retrieve this instance's number from its arguments.
@@ -40,14 +41,15 @@ public class SpeechFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        viewModel = new ViewModelProvider(this, new ViewModelProvider.NewInstanceFactory()).get(NoteViewModel.class);
+
         mNum = getArguments() != null ? getArguments().getInt("num") : 1;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        binding = ActivitySpeechBinding.inflate(inflater);
+        binding = FragmentSpeechBinding.inflate(inflater);
 
         // Initialize SpeechSDK and request required permissions.
         try {
@@ -106,8 +108,9 @@ public class SpeechFragment extends Fragment {
                         String selectedCategory = category[which];
                         String englishText = binding.englishText.getText().toString();
                         String koreanText = binding.koreanText.getText().toString();
-
-                        Toast.makeText(SpeechFragment.this.getActivity(), selectedCategory+" saved", Toast.LENGTH_SHORT).show();
+                        Note note = new Note(englishText, koreanText, selectedCategory);
+                        viewModel.insert(note);
+                        Toast.makeText(SpeechFragment.this.getActivity(), "Note saved", Toast.LENGTH_SHORT).show();
                     }
                 });
         builder.create().show();

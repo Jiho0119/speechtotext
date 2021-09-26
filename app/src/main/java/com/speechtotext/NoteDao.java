@@ -19,6 +19,6 @@ public interface NoteDao {
     @Delete()
     void deleteItem(Note note);
 
-    @Query("SELECT * FROM note_table WHERE category == category ORDER BY english ASC")
+    @Query("SELECT * FROM note_table WHERE category == :category ORDER BY english ASC")
     LiveData<List<Note>> getNote(String category);
 }

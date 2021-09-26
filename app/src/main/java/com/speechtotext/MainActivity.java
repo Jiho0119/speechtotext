@@ -20,7 +20,6 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        viewModel = new ViewModelProvider(this, new ViewModelProvider.NewInstanceFactory()).get(PlannerViewModel.class);
 
         mAdapter = new MyAdapter(this);
 
@@ -54,10 +53,10 @@ public class MainActivity extends FragmentActivity {
                 fragment.setArguments(args);
                 return fragment;
             } else {
-                SpeechFragment fragment = new SpeechFragment();
+                NoteFragment fragment = new NoteFragment();
                 Bundle args = new Bundle();
                 // Our object is just an integer :-P
-                args.putInt(SpeechFragment.ARG_OBJECT, position + 1);
+                args.putInt(NoteFragment.ARG_OBJECT, position + 1);
                 fragment.setArguments(args);
                 return fragment;
             }
