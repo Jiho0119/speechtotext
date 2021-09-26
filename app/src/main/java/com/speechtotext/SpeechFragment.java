@@ -53,8 +53,7 @@ public class SpeechFragment extends Fragment {
 
             // Request permissions needed for speech recognition
             ActivityCompat.requestPermissions(SpeechFragment.this.getActivity(), new String[]{RECORD_AUDIO, INTERNET, READ_EXTERNAL_STORAGE}, permissionRequestId);
-        }
-        catch(Exception ex) {
+        } catch (Exception ex) {
             Log.e("SpeechSDK", "could not init sdk, " + ex.toString());
         }
 
@@ -84,6 +83,13 @@ public class SpeechFragment extends Fragment {
                 }
             }
         });
+        binding.noteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                Toast.makeText(SpeechFragment.this.getActivity(), "Note saved", Toast.LENGTH_SHORT).show();
+
+            }
+        });
 
         return binding.getRoot();
     }
@@ -99,3 +105,4 @@ public class SpeechFragment extends Fragment {
         return f;
     }
 }
+

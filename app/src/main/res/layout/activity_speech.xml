@@ -61,4 +61,19 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/english_text" />
 
+    <Button
+        android:id="@+id/note_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:text="Save to Note!"
+        android:textSize="20sp"
+        android:background="@drawable/custom_button"
+        android:textColor="#FF0000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/listen_button" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
