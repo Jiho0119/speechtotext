@@ -34,6 +34,7 @@ public class SpeechFragment extends Fragment {
     SpeechTranslationConfig translationConfig = SpeechTranslationConfig.fromSubscription("70fbabf826564efd828ae9c8868512b7", "westus2");
     private FragmentSpeechBinding binding;
     private NoteViewModel viewModel;
+    private boolean isListening;
 
     /**
      * When creating, retrieve this instance's number from its arguments.
@@ -66,12 +67,16 @@ public class SpeechFragment extends Fragment {
         binding.listenButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (isListening) return;
+                isListening = true;
+
                 Toast.makeText(SpeechFragment.this.getActivity(), "Now Listening!", Toast.LENGTH_SHORT).show();
 
                 AudioConfig audioConfig = AudioConfig.fromDefaultMicrophoneInput();
 
                 translationConfig.setSpeechRecognitionLanguage("en-US");
                 translationConfig.addTargetLanguage("ko");
+
                 TranslationRecognizer translationRecognizer = new TranslationRecognizer(translationConfig, audioConfig);
 
                 TranslationRecognitionResult result = null;
@@ -87,6 +92,8 @@ public class SpeechFragment extends Fragment {
                         binding.koreanText.setText(pair.getValue());
                     }
                 }
+
+                isListening = false;
             }
         });
         binding.noteButton.setOnClickListener(new View.OnClickListener() {
