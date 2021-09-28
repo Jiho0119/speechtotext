@@ -7,7 +7,9 @@ import java.util.List;
 public class NoteRepository {
 
     private NoteDao noteDao;
-    private LiveData<List<Note>> liveData;
+    public LiveData<List<Note>> workLiveData;
+    public LiveData<List<Note>> schoolLiveData;
+    public LiveData<List<Note>> restaurantLiveData;
 
     // Note that in order to unit test the DiaryRepository, you have to remove the Application
     // dependency. This adds complexity and much more code, and this sample is not about testing.
@@ -17,14 +19,9 @@ public class NoteRepository {
         NoteRoomDatabase db = NoteRoomDatabase.getDatabase();
         noteDao = db.NoteDao();
 
-        liveData = noteDao.getNote("");
-    }
-
-    // Room executes all queries on a separate thread.
-    // Observed LiveData will notify the observer when the data has changed.
-    LiveData<List<Note>> getNote(String category) {
-        liveData = noteDao.getNote(category);
-        return liveData;
+        workLiveData = noteDao.getNote(SpeechFragment.WORK);
+        schoolLiveData = noteDao.getNote(SpeechFragment.SCHOOL);
+        restaurantLiveData = noteDao.getNote(SpeechFragment.RESTAURANT);
     }
 
     // You must call this on a non-UI thread or your app will throw an exception. Room ensures
@@ -32,12 +29,6 @@ public class NoteRepository {
     void insert(Note note) {
         NoteRoomDatabase.databaseWriteExecutor.execute(() -> {
             noteDao.insert(note);
-        });
-    }
-
-    void deleteItem(Note note) {
-        NoteRoomDatabase.databaseWriteExecutor.execute(() -> {
-            noteDao.deleteItem(note);
         });
     }
 }

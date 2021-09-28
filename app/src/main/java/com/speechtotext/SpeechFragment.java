@@ -34,6 +34,9 @@ public class SpeechFragment extends Fragment {
     SpeechTranslationConfig translationConfig = SpeechTranslationConfig.fromSubscription("70fbabf826564efd828ae9c8868512b7", "westus2");
     private FragmentSpeechBinding binding;
     private NoteViewModel viewModel;
+    public static String WORK = "Work";
+    public static String RESTAURANT = "Restaurant";
+    public static String SCHOOL = "School";
 
     /**
      * When creating, retrieve this instance's number from its arguments.
@@ -73,7 +76,6 @@ public class SpeechFragment extends Fragment {
                 translationConfig.setSpeechRecognitionLanguage("en-US");
                 translationConfig.addTargetLanguage("ko");
                 TranslationRecognizer translationRecognizer = new TranslationRecognizer(translationConfig, audioConfig);
-
                 TranslationRecognitionResult result = null;
                 try {
                     result = translationRecognizer.recognizeOnceAsync().get();
@@ -100,7 +102,7 @@ public class SpeechFragment extends Fragment {
     }
 
     private void showDialog() {
-        String[] category = new String[] {"Work", "Restaurant", "School"};
+        String[] category = new String[] {WORK, RESTAURANT, SCHOOL};
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Choose a situation")
                 .setItems(category, new DialogInterface.OnClickListener() {

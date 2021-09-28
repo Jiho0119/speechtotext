@@ -37,7 +37,13 @@ public class NoteFragment extends Fragment {
         binding.recyclerview.setAdapter(adapter);
         binding.recyclerview.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        viewModel.getNotes.observe(getViewLifecycleOwner(), notes -> {
+        viewModel.schoolLiveData.observe(getViewLifecycleOwner(), notes -> {
+            adapter.updateData(notes);
+        });
+        viewModel.restaurantLiveData.observe(getViewLifecycleOwner(), notes -> {
+            adapter.updateData(notes);
+        });
+        viewModel.workLiveData.observe(getViewLifecycleOwner(), notes -> {
             adapter.updateData(notes);
         });
 
