@@ -46,15 +46,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/listen_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
         android:text="Press to Listen"
-        android:textSize="20sp"
         android:background="@drawable/custom_button"
+        android:textSize="20sp"
         android:textColor="@color/teal_700"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -68,8 +68,8 @@
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
         android:text="Save to Note!"
-        android:textSize="20sp"
         android:background="@drawable/custom_button"
+        android:textSize="20sp"
         android:textColor="#FF0000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

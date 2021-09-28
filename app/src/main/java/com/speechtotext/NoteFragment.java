@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -13,12 +15,19 @@ import com.microsoft.cognitiveservices.speech.translation.SpeechTranslationConfi
 import com.speechtotext.databinding.FragmentNoteBinding;
 import com.speechtotext.databinding.FragmentSpeechBinding;
 
+import java.util.List;
+
 public class NoteFragment extends Fragment {
     public static final String ARG_OBJECT = "object";
-    int mNum;
     private FragmentNoteBinding binding;
     private NoteViewModel viewModel;
     private NoteRecyclerViewAdapter adapter;
+    private final Observer<List<Note>> notesObserver = new Observer<List<Note>>() {
+        @Override
+        public void onChanged(List<Note> notes) {
+            adapter.updateData(notes);
+        }
+    };
 
     /**
      * When creating, retrieve this instance's number from its arguments.
@@ -27,7 +36,6 @@ public class NoteFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(this, new ViewModelProvider.NewInstanceFactory()).get(NoteViewModel.class);
-        mNum = getArguments() != null ? getArguments().getInt("num") : 1;
     }
 
     @Override
@@ -37,16 +45,34 @@ public class NoteFragment extends Fragment {
         binding.recyclerview.setAdapter(adapter);
         binding.recyclerview.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        viewModel.schoolLiveData.observe(getViewLifecycleOwner(), notes -> {
-            adapter.updateData(notes);
-        });
-        viewModel.restaurantLiveData.observe(getViewLifecycleOwner(), notes -> {
-            adapter.updateData(notes);
-        });
-        viewModel.workLiveData.observe(getViewLifecycleOwner(), notes -> {
-            adapter.updateData(notes);
+        binding.restaurant.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startObserveLiveData(viewModel.restaurantLiveData);
+            }
         });
 
+        binding.school.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startObserveLiveData(viewModel.schoolLiveData);
+            }
+        });
+
+        binding.work.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startObserveLiveData(viewModel.workLiveData);
+            }
+        });
+
+        binding.work.performClick();
+
         return binding.getRoot();
+    }
+
+    private void startObserveLiveData(LiveData<List<Note>> liveData) {
+        liveData.removeObserver((notesObserver));
+        liveData.observe(getViewLifecycleOwner(), notesObserver);
     }
 }

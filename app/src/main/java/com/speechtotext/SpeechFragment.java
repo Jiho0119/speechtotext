@@ -5,6 +5,7 @@ import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.RECORD_AUDIO;
 
 import androidx.core.app.ActivityCompat;
+import androidx.core.os.HandlerCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -13,6 +14,8 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,11 +30,14 @@ import com.microsoft.cognitiveservices.speech.audio.AudioConfig;
 import com.speechtotext.databinding.FragmentSpeechBinding;
 
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class SpeechFragment extends Fragment {
     public static final String ARG_OBJECT = "object";
-    int mNum;
-    SpeechTranslationConfig translationConfig = SpeechTranslationConfig.fromSubscription("70fbabf826564efd828ae9c8868512b7", "westus2");
+    private SpeechTranslationConfig translationConfig = SpeechTranslationConfig.fromSubscription("70fbabf826564efd828ae9c8868512b7", "westus2");
+    private ExecutorService executorService = Executors.newFixedThreadPool(1);
+    private final Handler resultHandler = HandlerCompat.createAsync(Looper.getMainLooper());
     private FragmentSpeechBinding binding;
     private NoteViewModel viewModel;
     public static String WORK = "Work";
@@ -45,8 +51,6 @@ public class SpeechFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(this, new ViewModelProvider.NewInstanceFactory()).get(NoteViewModel.class);
-
-        mNum = getArguments() != null ? getArguments().getInt("num") : 1;
     }
 
     @Override
@@ -69,26 +73,26 @@ public class SpeechFragment extends Fragment {
         binding.listenButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                binding.listenButton.setEnabled(false);
+                binding.noteButton.setEnabled(false);
                 Toast.makeText(SpeechFragment.this.getActivity(), "Now Listening!", Toast.LENGTH_SHORT).show();
 
-                AudioConfig audioConfig = AudioConfig.fromDefaultMicrophoneInput();
+                executorService.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        AudioConfig audioConfig = AudioConfig.fromDefaultMicrophoneInput();
 
-                translationConfig.setSpeechRecognitionLanguage("en-US");
-                translationConfig.addTargetLanguage("ko");
-                TranslationRecognizer translationRecognizer = new TranslationRecognizer(translationConfig, audioConfig);
-                TranslationRecognitionResult result = null;
-                try {
-                    result = translationRecognizer.recognizeOnceAsync().get();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                if (result.getReason() == ResultReason.TranslatedSpeech) {
-                    binding.englishText.setText(result.getText());
-                    for (Map.Entry<String, String> pair : result.getTranslations().entrySet()) {
-                        binding.koreanText.setText(pair.getValue());
+                        translationConfig.setSpeechRecognitionLanguage("en-US");
+                        translationConfig.addTargetLanguage("ko");
+                        TranslationRecognizer translationRecognizer = new TranslationRecognizer(translationConfig, audioConfig);
+                        try {
+                            TranslationRecognitionResult result = translationRecognizer.recognizeOnceAsync().get();
+                            notifyResult(result);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
-                }
+                });
             }
         });
         binding.noteButton.setOnClickListener(new View.OnClickListener() {
@@ -99,6 +103,22 @@ public class SpeechFragment extends Fragment {
         });
 
         return binding.getRoot();
+    }
+
+    private void notifyResult(TranslationRecognitionResult result) {
+        resultHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (result.getReason() == ResultReason.TranslatedSpeech) {
+                    binding.englishText.setText(result.getText());
+                    for (Map.Entry<String, String> pair : result.getTranslations().entrySet()) {
+                        binding.koreanText.setText(pair.getValue());
+                    }
+                }
+                binding.listenButton.setEnabled(true);
+                binding.noteButton.setEnabled(true);
+            }
+        });
     }
 
     private void showDialog() {

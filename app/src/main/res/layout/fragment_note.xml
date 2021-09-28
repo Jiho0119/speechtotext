@@ -8,21 +8,47 @@
     tools:context=".SpeechFragment">
 
     <Button
-        android:id="@+id/anyText"
-        android:layout_width="wrap_content"
+        android:id="@+id/restaurant"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Restaurant"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textAllCaps="false"
+        app:layout_constraintEnd_toStartOf="@id/school"
+        app:layout_constraintStart_toEndOf="@id/work"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/work"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         android:text="Work"
         android:textColor="@color/white"
-        android:textSize="24sp"
+        android:textSize="18sp"
+        android:textAllCaps="false"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toStartOf="@+id/restaurant"
+         />
+    <Button
+        android:id="@+id/school"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="School"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textAllCaps="false"
+        app:layout_constraintStart_toEndOf="@id/restaurant"
+        app:layout_constraintEnd_toEndOf="parent"
+         />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/anyText"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/restaurant"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />

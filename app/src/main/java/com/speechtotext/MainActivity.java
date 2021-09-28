@@ -46,19 +46,9 @@ public class MainActivity extends FragmentActivity {
         public Fragment createFragment(int position) {
             // Return a NEW fragment instance in createFragment(int)
             if (position == 0) {
-                SpeechFragment fragment = new SpeechFragment();
-                Bundle args = new Bundle();
-                // Our object is just an integer :-P
-                args.putInt(SpeechFragment.ARG_OBJECT, position + 1);
-                fragment.setArguments(args);
-                return fragment;
+                return new SpeechFragment();
             } else {
-                NoteFragment fragment = new NoteFragment();
-                Bundle args = new Bundle();
-                // Our object is just an integer :-P
-                args.putInt(NoteFragment.ARG_OBJECT, position + 1);
-                fragment.setArguments(args);
-                return fragment;
+                return new NoteFragment();
             }
         }
 

@@ -1,6 +1,5 @@
 package com.speechtotext;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +24,7 @@ public class NoteRecyclerViewAdapter extends RecyclerView.Adapter<NoteRecyclerVi
 
     @Override
     public void onBindViewHolder(@NonNull NoteRecyclerViewHolder holder, int position) {
-        holder.textViewEnglish.setText( data.get(position).english);
+        holder.textViewEnglish.setText(data.get(position).english);
         holder.textViewKorean.setText(data.get(position).korean);
     }
 
