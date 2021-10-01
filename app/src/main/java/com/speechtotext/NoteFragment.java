@@ -11,9 +11,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.microsoft.cognitiveservices.speech.translation.SpeechTranslationConfig;
 import com.speechtotext.databinding.FragmentNoteBinding;
-import com.speechtotext.databinding.FragmentSpeechBinding;
 
 import java.util.List;
 

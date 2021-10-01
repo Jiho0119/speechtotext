@@ -69,7 +69,7 @@ public class SpeechFragment extends Fragment {
         } catch (Exception ex) {
             Log.e("SpeechSDK", "could not init sdk, " + ex.toString());
         }
-
+//        binding.noteButton.setEnabled(false);
         binding.listenButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -80,6 +80,12 @@ public class SpeechFragment extends Fragment {
                 executorService.execute(new Runnable() {
                     @Override
                     public void run() {
+                        // Heavy works that take longer time (Recognizing Audio Input) should be run on background thread, so that Main thread is not blocked.
+                        // If main thread is blocked, app becomes not responsive (App doesn't recognize user interaction)
+                        // After works in background thread are done, in order to update UI based on the result, it needs to communicate the result to Main thread and
+                        // update the UI (Setting the text to textView) in Main thread
+
+                        // Run on background thread
                         AudioConfig audioConfig = AudioConfig.fromDefaultMicrophoneInput();
 
                         translationConfig.setSpeechRecognitionLanguage("en-US");
@@ -95,6 +101,7 @@ public class SpeechFragment extends Fragment {
                 });
             }
         });
+
         binding.noteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -109,6 +116,7 @@ public class SpeechFragment extends Fragment {
         resultHandler.post(new Runnable() {
             @Override
             public void run() {
+                // Run on Main thread
                 if (result.getReason() == ResultReason.TranslatedSpeech) {
                     binding.englishText.setText(result.getText());
                     for (Map.Entry<String, String> pair : result.getTranslations().entrySet()) {
@@ -125,17 +133,21 @@ public class SpeechFragment extends Fragment {
         String[] category = new String[] {WORK, RESTAURANT, SCHOOL};
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Choose a situation")
-                .setItems(category, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        String selectedCategory = category[which];
-                        String englishText = binding.englishText.getText().toString();
-                        String koreanText = binding.koreanText.getText().toString();
-                        Note note = new Note(englishText, koreanText, selectedCategory);
-                        viewModel.insert(note);
-                        Toast.makeText(SpeechFragment.this.getActivity(), "Note saved", Toast.LENGTH_SHORT).show();
-                    }
-                });
+            .setCancelable(false)
+            .setItems(category, new DialogInterface.OnClickListener() {
+
+                public void onClick(DialogInterface dialog, int which) {
+                    String selectedCategory = category[which];
+                    String englishText = binding.englishText.getText().toString();
+                    String koreanText = binding.koreanText.getText().toString();
+                    Note note = new Note(englishText, koreanText, selectedCategory);
+                    viewModel.insert(note);
+                    Toast.makeText(SpeechFragment.this.getActivity(), "Note saved", Toast.LENGTH_SHORT).show();
+                }
+            });
         builder.create().show();
+        binding.noteButton.setEnabled(false);
+
     }
 
     static SpeechFragment newInstance(int num) {
