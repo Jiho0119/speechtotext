@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.speechtotext.databinding.FragmentNoteBinding;
@@ -41,6 +42,11 @@ public class NoteFragment extends Fragment {
         binding = FragmentNoteBinding.inflate(inflater);
         adapter = new NoteRecyclerViewAdapter();
         binding.recyclerview.setAdapter(adapter);
+
+        DividerItemDecoration itemDecoration = new DividerItemDecoration(binding.recyclerview.getContext(), DividerItemDecoration.VERTICAL);
+        itemDecoration.setDrawable(getActivity().getDrawable(R.drawable.linecolor));
+        binding.recyclerview.addItemDecoration(itemDecoration);
+
         binding.recyclerview.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         binding.restaurant.setOnClickListener(new View.OnClickListener() {
