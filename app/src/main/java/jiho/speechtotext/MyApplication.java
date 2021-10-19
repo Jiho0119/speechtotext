@@ -1,4 +1,4 @@
-package com.speechtotext;
+package jiho.speechtotext;
 
 import android.app.Application;
 import android.content.Context;

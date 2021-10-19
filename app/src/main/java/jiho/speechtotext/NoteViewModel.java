@@ -1,9 +1,8 @@
-package com.speechtotext;
+package jiho.speechtotext;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class NoteViewModel extends ViewModel {

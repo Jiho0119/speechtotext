@@ -1,4 +1,4 @@
-package com.speechtotext;
+package jiho.speechtotext;
 
 import static android.Manifest.permission.INTERNET;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
@@ -6,12 +6,10 @@ import static android.Manifest.permission.RECORD_AUDIO;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.os.HandlerCompat;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;

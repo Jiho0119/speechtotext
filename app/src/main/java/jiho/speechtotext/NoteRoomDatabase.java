@@ -1,4 +1,4 @@
-package com.speechtotext;
+package jiho.speechtotext;
 
 import androidx.room.Database;
 import androidx.room.Room;
